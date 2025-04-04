@@ -20,7 +20,7 @@ items = [
 app = Flask("Mein erster Server")
 CORS(app)
 
-@app.route("/api/add",methods=["POST"])
+@app.route("/api/add", methods=["POST"])
 def add_item():
     pass
 #@app.route('/api/add', methods=['POST'])
