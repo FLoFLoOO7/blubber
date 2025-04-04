@@ -1,4 +1,4 @@
-# Planungsdokument: [Projektname]
+# Planungsdokument: [Temu_Quizlet]
 
 ## Teammitglieder
 - Luka
@@ -14,7 +14,8 @@ Man kann Karteikarten selbst erstellen mit einer Vorder und Rückseite. Die Vord
 ## 2. Frontend-Planung
 ### 2.1 Ansichten
 *Beschreibt jede geplante Ansicht/Seite eurer Anwendung. Fügt jeweils den Namen der Ansicht, eine kurze Beschreibung, sowie eine ganz einfache Skizze (Wireframe) ein.*
-
+![alt text](image.png)
+![alt text](image-1.png)
 
 
 
@@ -40,10 +41,12 @@ data() {
 ### 3.1 API-Endpunkte
 
 | Endpunkt | HTTP-Methode | Beschreibung | Request-Body | Response |
-|----------|-------------|-------------|--------------|----------|
-| /api/Set | GET | Alle Benutzer abrufen | - | Liste von Benutzern |
-| /api/add | POST | Neuen Benutzer erstellen | `{name, email, ...}` | Erstellter Benutzer |
-| /api/erledigt | GET | Einzelnen Benutzer abrufen | - | Benutzerdaten |
+|----------|--------------|--------------|--------------|----------|
+| /api/Set | GET          | Alle Karteikaarten abrufen | - | Liste von Benutzern |
+| /api/add | POST         | Neue Karteikarte hinzufügen | `{name, begriff, definition, erledigt}` | Neue Karteikarte |
+| /api/erledigt | put | erledigt auf true machen | - |- |
+| /api/set_add | post | neues set hinzufügen | `{set_id,name}` |- |
+
 | ... | ... | ... | ... | ... |
 
 ## 4. Datenbankmodell
@@ -52,17 +55,8 @@ data() {
 *Beschreibt eure Datenbanktabellen und deren Beziehungen zueinander*
 In der Datenbank Set wird der Name des Sets gespeichert und eine Id wird hinzugefügt. In der anderen Datenbank wird die Id der Datenbank abgerfen und hat die Einträge für die Karteikarten sowie Eine Spalte um zu sehen ob man die Karte schon kann oder nicht. 
 
-**Tabelle: users**
-| Spalte | Datentyp | Beschreibung | Constraints |
-|--------|----------|-------------|------------|
-| id | integer | Eindeutige ID | PRIMARY KEY |
-| username | string | Benutzername | NOT NULL, UNIQUE |
-| email | string | E-Mail-Adresse | NOT NULL, UNIQUE |
-| ... | ... | ... | ... |
+**Tabelle: Karten**
 
-| Set | Set_Id | 
-|-----|----|
-|name | 3  |
 
 
 |Set_id| Vorderseit| Rückseite | erledigt |
@@ -71,16 +65,17 @@ In der Datenbank Set wird der Name des Sets gespeichert und eine Id wird hinzuge
 |  3   | rot       | rouge     | False    | 
 |  3   | grün      | vert      | False    |
 
-**Tabelle: [Weitere Tabelle]**
-| Spalte | Datentyp | Beschreibung | Constraints |
-|--------|----------|-------------|------------|
-| ... | ... | ... | ... |
+**Tabelle: Sets**
+| Set_id | Name |
+|--------|------|
+|   1    | bob  |
+|   2    | job  |
 
 ## 5. Aufgabenverteilung
 
 *Wer ist für welche Aufgaben hauptverantwortlich?*
 
 | Teammitglied | Hauptverantwortlichkeiten |
-|-------------|---------------------------|
+|--------------|---------------------------|
 | Name 1 | • Frontend-Design<br>• User-Authentication<br>• ... |
 | Name 2 | • Backend-Routen<br>• Datenbankintegration<br>• ... |
