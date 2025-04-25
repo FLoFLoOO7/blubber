@@ -1,0 +1,101 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+
+  <!-- HTML Teil Anfang -->
+
+  <body>
+    <div id="app">
+
+        <img src="     " alt="Zahnrad">
+
+        <div class="Set">       </div>
+
+        <div class="Karteikarte">
+           <p>         </p>
+        </div>  
+
+    </div>
+  </body>
+
+  <!-- HTML Teil Ende -->
+
+
+  <script>
+    const { createApp } = Vue // Muss sein um Vue zu verwenden, erstellt vue app
+    const API_BASE_URL = 'http://127.0.0.1:5000';
+  
+    createApp({
+  
+      data() { // Data -> Beschreibt die dynamischen Informationen, unserer App
+        return {
+          new_element_text: '',
+          items:[],
+        }
+  
+      },
+      methods: {
+        
+        focusNext(index) {
+            this.$refs[`input${index}`]?.focus();
+        },
+ //       async fetchItems() {
+   //       try {
+ //            const response = await fetch(`${API_BASE_URL}/api/items`, {
+ //            method: 'GET',
+ //            headers: {
+ //              'Accept': 'application/json',
+ //              'Access-Control-Allow-Origin':'*',
+ //              }
+ //                })
+ //            this.items = await response.json()
+ //            console.log(this.items)
+ //            } catch (error) {
+ //            console.error('Error fetching items:', error)
+ //            }
+ //        },
+ //        async alsErledigtMarkieren(item){
+  //         item.erledigt=true
+ //          try {
+ //            const response = await fetch(`${API_BASE_URL}/api/items/${item.id}`, {
+ //            method: 'Put',
+ //            headers: {
+ //              'Accept': 'application/json',
+ //              'Access-Control-Allow-Origin':'*',
+ //              body: json.stringify(item)
+ //              }
+ //                })
+ //            const result=await response.json()
+ //            this.items=result.items
+            
+ //            } catch (error) {
+  //           console.error('Error fetching items:', error)
+ //            }
+        },
+        
+        loadSet(){
+          pass
+
+        },
+       
+      },
+      
+    ).mount('#app')
+  
+  </script>
+
+<style>
+
+    .Set {
+        justify-content: center;
+        
+    }
+
+    .Karteikarte {
+        justify-content: center;
+        align-items: center;
+
+  }
+</style>
