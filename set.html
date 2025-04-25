@@ -9,7 +9,7 @@
   <body class="Background">
     <div id="app">
 
-        <img src="Zahnrad.png" alt="Zahnrad">
+        <img class="Zahnrad" src="Zahnrad.png" alt="Zahnrad" @click="deineMethode">
 
         <div class="Set">       </div>
 
@@ -90,9 +90,17 @@
 
     .Background {
         background-color: rgb(166, 202, 236);
-        height: 20px !important;
-        width: 20px !important;
+
     }
+
+    .Zahnrad {
+        height: 40px !important;
+        width: 45px !important;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
     .Set {
         justify-content: center;
 
