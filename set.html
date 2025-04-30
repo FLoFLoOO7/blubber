@@ -9,13 +9,21 @@
   <body class="Background">
     <div id="app">
 
-        <img class="Zahnrad" src="Zahnrad.png" alt="Zahnrad" @click="deineMethode">
+      <a href="input.html" @click="deineMethode">
+        <img class="Zahnrad" src="Zahnrad.png" alt="Zahnrad">
+      </a>
 
-        <div class="Set">       </div>
+      <div class="SetName">{{setName}} jj </div>
 
-        <div class="Karteikarte">
-           <p>        </p>
-        </div>  
+      <div class="Set">
+        <div class="NichtErledigt">{{ countNichtErledigt }}</div>
+        <div class="Karteikarte" @click="flipCard">
+
+          //
+
+        </div>
+        <div class="Erledigt">{{ countErledigt }}</div>
+      </div>  
 
     </div>
   </body>
@@ -73,6 +81,7 @@
  //            } catch (error) {
   //           console.error('Error fetching items:', error)
  //            }
+
         },
         
         loadSet(){
@@ -101,14 +110,27 @@
         right: 20px;
     }
 
-    .Set {
+    .SetName {
         justify-content: center;
 
     }
 
-    .Karteikarte {
+    .Set {
         justify-content: center;
         align-items: center;
+      
+    }
 
-  }
+    .Karteikarte {
+      position: absolute;
+    }
+
+    .Erledigt {
+      position: absolute;
+    }
+
+    .NichtErledigt {
+      position: absolute;
+    }
+
 </style>
