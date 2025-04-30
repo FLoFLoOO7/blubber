@@ -19,7 +19,7 @@
         <div class="NichtErledigt">{{ countNichtErledigt }}</div>
         <div class="Karteikarte" @click="flipCard">
 
-          //
+          <!-- <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p> -->
 
         </div>
         <div class="Erledigt">{{ countErledigt }}</div>
@@ -46,6 +46,10 @@
       },
       methods: {
         
+        flipCard() {
+          this.showDefinition = !this.showDefinition;
+        },
+
         focusNext(index) {
             this.$refs[`input${index}`]?.focus();
         },
