@@ -1,140 +1,148 @@
+
 <head>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
+<!-- HTML Teil Anfang -->
+<body class="Background">
+  <div id="app">
+    <a href="input.html">
+      <img class="Zahnrad" src="Zahnrad.png" alt="Zahnrad">
+    </a>
+    <div class="SetName">{{setName}} Name Set Beispiel</div>
+    <div class="Set">
+      <div class="NichtErledigt">{{ countNichtErledigt }}</div>
+      <div class="Karteikarte" @click="flipCard">
+Karteikarte Beispiel
+        <!-- <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p> -->
+      </div>
+      <div class="Erledigt">{{ countErledigt }}</div>
+    </div>  
+  </div>
+</body>
+<!-- HTML Teil Ende -->
 
-  <!-- HTML Teil Anfang -->
+<script>
+  const { createApp } = Vue // Muss sein um Vue zu verwenden, erstellt vue app
+  const API_BASE_URL = 'http://127.0.0.1:5000';
 
-  <body class="Background">
-    <div id="app">
+  createApp({
 
-      <a href="input.html" @click="deineMethode">
-        <img class="Zahnrad" src="Zahnrad.png" alt="Zahnrad">
-      </a>
+    data() { // Data -> Beschreibt die dynamischen Informationen, unserer App
+      return {
+        new_element_text: '',
+        items:[],
+      }
 
-      <div class="SetName">{{setName}} 1, 2, 3, Test, Test </div>
-
-      <div class="Set">
-        <div class="NichtErledigt">{{ countNichtErledigt }}</div>
-        <div class="Karteikarte" @click="flipCard">
-
-          <!-- <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p> -->
-
-        </div>
-        <div class="Erledigt">{{ countErledigt }}</div>
-      </div>  
-
-    </div>
-  </body>
-
-  <!-- HTML Teil Ende -->
-
-
-  <script>
-    const { createApp } = Vue // Muss sein um Vue zu verwenden, erstellt vue app
-    const API_BASE_URL = 'http://127.0.0.1:5000';
-  
-    createApp({
-  
-      data() { // Data -> Beschreibt die dynamischen Informationen, unserer App
-        return {
-          new_element_text: '',
-          items:[],
-        }
-  
-      },
-      methods: {
-        
-        flipCard() {
-          this.showDefinition = !this.showDefinition;
-        },
-
-        focusNext(index) {
-            this.$refs[`input${index}`]?.focus();
-        },
- //       async fetchItems() {
-   //       try {
- //            const response = await fetch(`${API_BASE_URL}/api/items`, {
- //            method: 'GET',
- //            headers: {
- //              'Accept': 'application/json',
- //              'Access-Control-Allow-Origin':'*',
- //              }
- //                })
- //            this.items = await response.json()
- //            console.log(this.items)
- //            } catch (error) {
- //            console.error('Error fetching items:', error)
- //            }
- //        },
- //        async alsErledigtMarkieren(item){
-  //         item.erledigt=true
- //          try {
- //            const response = await fetch(`${API_BASE_URL}/api/items/${item.id}`, {
- //            method: 'Put',
- //            headers: {
- //              'Accept': 'application/json',
- //              'Access-Control-Allow-Origin':'*',
- //              body: json.stringify(item)
- //              }
- //                })
- //            const result=await response.json()
- //            this.items=result.items
-            
- //            } catch (error) {
-  //           console.error('Error fetching items:', error)
- //            }
-
-        },
-        
-        loadSet(){
-          pass
-
-        },
-       
+    },
+    methods: {
+      
+      flipCard() {
+        this.showDefinition = !this.showDefinition;
       },
       
-    ).mount('#app')
-  
-  </script>
+//       async fetchItems() {
+ //       try {
+//            const response = await fetch(`${API_BASE_URL}/api/items`, {
+//            method: 'GET',
+//            headers: {
+//              'Accept': 'application/json',
+//              'Access-Control-Allow-Origin':'*',
+//              }
+//                })
+//            this.items = await response.json()
+//            console.log(this.items)
+//            } catch (error) {
+//            console.error('Error fetching items:', error)
+//            }
+//        },
+//        async alsErledigtMarkieren(item){
+//         item.erledigt=true
+//          try {
+//            const response = await fetch(`${API_BASE_URL}/api/items/${item.id}`, {
+//            method: 'Put',
+//            headers: {
+//              'Accept': 'application/json',
+//              'Access-Control-Allow-Origin':'*',
+//              body: json.stringify(item)
+//              }
+//                })
+//            const result=await response.json()
+//            this.items=result.items
+          
+//            } catch (error) {
+//           console.error('Error fetching items:', error)
+//            }
+      },
+      
+      loadSet(){
+        pass
+      },
+     
+    },
+    
+  ).mount('#app')
 
+</script>
 <style>
-
-    .Background {
-        background-color: rgb(166, 202, 236);
-
-    }
-
-    .Zahnrad {
-        height: 40px !important;
-        width: 45px !important;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
-    .SetName {
-        justify-content: center;
-
-    }
-
-    .Set {
-        justify-content: center;
-        align-items: center;
-      
-    }
-
-    .Karteikarte {
+  html, body {
+      height: 100%;
+      margin: 0;
+  }
+  .Background {
+      background-color: rgb(166, 202, 236);
+  }
+  .Zahnrad {
+      height: 40px !important;
+      width: 45px !important;
       position: absolute;
-    }
-
-    .Erledigt {
+      top: 20px;
+      right: 20px;
+  }
+  .SetName {
       position: absolute;
-    }
-
-    .NichtErledigt {
+      top: 16vh;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+  }
+  .Set {
       position: absolute;
-    }
-
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      gap: 24px; /* Abstand zwischen Button / Karte / Button */
+  }
+  .Karteikarte {
+      width: 500px;
+      height: 230px;
+      border: 3px solid black;
+      border-radius: 8px;
+      padding: 16px;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.15s ease;
+      cursor: pointer;
+  }
+  .Erledigt, .NichtErledigt {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 3px solid black;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-weight: bold;
+  }
 </style>
