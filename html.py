@@ -8,21 +8,24 @@ from supabase import create_client, Client
 url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
-
 id_count = 3
-items = [
- { 'id': 0, 'name': "Rüebli", 'emoji': " ", 'erledigt': False,'anzahl': 4 },
- { 'id': 1, 'name': "Härdöpfel", 'emoji': " ", 'erledigt': True,'anzahl': 2 },
- { 'id': 2, 'name': "Brokkoli", 'emoji': " ", 'erledigt': False,'anzahl': 1 }
-]
+franzset=[
+    {"set_id":1,"vorderseite":"magasin","ruckseite":"laden","erledigt":False},
+    {"set_id":1,"vorderseite":"magasin","ruckseite":"laden","erledigt":False},
+    {"set_id":1,"vorderseite":"magasin","ruckseite":"laden","erledigt":False},
+    {"set_id":1,"vorderseite":"magasin","ruckseite":"laden","erledigt":False},
+    
 
+]
 
 app = Flask("Mein erster Server")
 CORS(app)
 
-@app.route("/api/add", methods=["POST"])
+@app.route("/api/add",methods=["PUT"])
 def add_item():
-    pass
+    new_card=request.get_json()
+    franzset.append(new_card)
+    print(franzset)
 #@app.route('/api/add', methods=['POST'])
 #def create_item():
  #   global id_count # Die Variable id_count in der Methode definiert
