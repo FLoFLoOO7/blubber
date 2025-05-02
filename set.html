@@ -8,7 +8,7 @@
 <body class="Background">
   <div id="app">
     <a href="input.html">
-      <img class="Zahnrad" src="Zahnrad.png" alt="Zahnrad">
+      <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu">
     </a>
     <div class="SetName">{{setName}} Setname Beispiel</div>
     <div class="Set">
@@ -93,9 +93,11 @@ Karteikarte Beispiel
       height: 100%;
       margin: 0;
   }
+
   .Background {
       background-color: rgb(166, 202, 236);
   }
+
   .Zahnrad {
       height: 40px !important;
       width: 45px !important;
@@ -103,6 +105,7 @@ Karteikarte Beispiel
       top: 20px;
       right: 20px;
   }
+
   .SetName {
       position: absolute;
       top: 16vh;
@@ -110,6 +113,7 @@ Karteikarte Beispiel
       transform: translateX(-50%);
       text-align: center;
   }
+
   .Set {
       position: absolute;
       top: 50%;
@@ -119,6 +123,7 @@ Karteikarte Beispiel
       align-items: center;
       gap: 24px; /* Abstand zwischen Button / Karte / Button */
   }
+
   .Karteikarte {
       width: 500px;
       height: 230px;
@@ -134,6 +139,7 @@ Karteikarte Beispiel
       transition: all 0.15s ease;
       cursor: pointer;
   }
+
   .ErledigtButton, .NichtErledigtButton {
       width: 70px;
       height: 70px;
