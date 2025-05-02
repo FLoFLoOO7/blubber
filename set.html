@@ -10,14 +10,17 @@
     <a href="input.html">
       <img class="Zahnrad" src="Zahnrad.png" alt="Zahnrad">
     </a>
-    <div class="SetName">{{setName}} Name Set Beispiel</div>
+    <div class="SetName">{{setName}} Setname Beispiel</div>
     <div class="Set">
-      <div class="NichtErledigt">{{ countNichtErledigt }}</div>
+      <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
+      <div class="NichtErledigtButton">🟥</div>
       <div class="Karteikarte" @click="flipCard">
 Karteikarte Beispiel
         <!-- <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p> -->
       </div>
-      <div class="Erledigt">{{ countErledigt }}</div>
+      <div class="ErledigtButton">🟩</div>
+      <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
+      <div class="Count">{{ countAnzahl }} Anzeige Beispiel</div>
     </div>  
   </div>
 </body>
@@ -131,7 +134,7 @@ Karteikarte Beispiel
       transition: all 0.15s ease;
       cursor: pointer;
   }
-  .Erledigt, .NichtErledigt {
+  .ErledigtButton, .NichtErledigtButton {
       width: 70px;
       height: 70px;
       border-radius: 50%;
@@ -144,5 +147,23 @@ Karteikarte Beispiel
       cursor: pointer;
       transition: all 0.15s ease;
       font-weight: bold;
+      text-align: center;
+      font-size: x-large;
+      line-height: 70px;
   }
+
+  .ErledigtCounter, .NichtErledigtCounter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  .Count {
+      position: absolute;
+      top: 52vh;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center
+  }
+
 </style>
