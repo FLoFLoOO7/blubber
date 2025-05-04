@@ -12,8 +12,9 @@ response = (
     supabase.table("Karteikarten")
     .select("*")
     .execute()
+    
 )
-
+print(response)
 franzset=[
     {"set_id":1,"vorderseite":"magasin","ruckseite":"laden","erledigt":False},
     {"set_id":1,"vorderseite":"magasin","ruckseite":"laden","erledigt":False},
@@ -29,8 +30,19 @@ CORS(app)
 @app.route("/api/add",methods=["PUT"])
 def add_item():
     new_card=request.get_json()
-    franzset.append(new_card)
-    print(franzset)
+    response_add = (
+        supabase.table("Karteikarten")
+        .insert(new_card)
+        .execute()
+    )
+    response = (
+    supabase.table("Karteikarten")
+    .select("*")
+    .execute()
+    
+)
+    print(response)
+print(response)
 #@app.route('/api/add', methods=['POST'])
 #def create_item():
  #   global id_count # Die Variable id_count in der Methode definiert
