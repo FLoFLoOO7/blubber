@@ -4,6 +4,11 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
+
+
+
+
+
 <!-- HTML Teil Anfang -->
 <body class="Background">
   <div id="app">
@@ -12,32 +17,38 @@
     </a>
     <div class="SetName">{{ setName }} Setname Beispiel</div>
     <div class="Set">
-      <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
-      <div class="NichtErledigtButton">🟥</div>
       <div class="Karteikarte" @click="flipCard">
-Karteikarte Beispiel
-        <!-- <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p> -->
+        Karteikarte Beispiel
       </div>
-      <div class="ErledigtButton">🟩</div>
-      <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
+
+      <!-- Buttons und Counter nebeneinander zur Karteikarte bei großen Bildschirmen -->
+      <div class="ButtonsAndCounters">
+        <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
+        <div class="NichtErledigtButton">🟥</div>
+        <div class="ErledigtButton">🟩</div>
+        <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
+      </div>
+      
+      <!-- Count bleibt unter der Karteikarte -->
       <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
     </div>  
   </div>
 </body>
 <!-- HTML Teil Ende -->
 
+
+
+
+
 <script>
   const { createApp } = Vue // Muss sein um Vue zu verwenden, erstellt vue app
   const API_BASE_URL = 'http://127.0.0.1:5000';
-
   createApp({
-
     data() { // Data -> Beschreibt die dynamischen Informationen, unserer App
       return {
         new_element_text: '',
         items:[],
       }
-
     },
     methods: {
       
@@ -86,5 +97,4 @@ Karteikarte Beispiel
     },
     
   ).mount('#app')
-
 </script>
