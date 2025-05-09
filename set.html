@@ -12,28 +12,39 @@
 <!-- HTML Teil Anfang -->
 <body class="Background">
   <div id="app">
+    
+    <!-- Zahnrad (zurück zum Menü) -->
     <a href="input.html">
       <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu">
     </a>
-    <div class="SetName">{{ setName }} Setname Beispiel</div>
-    <div class="Set">
-      <div class="Karteikarte" @click="flipCard">
-        Karteikarte Beispiel
-      </div>
 
-      <!-- Buttons und Counter nebeneinander zur Karteikarte bei großen Bildschirmen -->
-      <div class="ButtonsAndCounters">
+    <!-- Set Name -->
+    <div class="SetName">{{ setName }} Setname Beispiel</div>
+
+    <!-- Set-Container -->
+    <div class="Set">
+      
+      <!-- Buttons, Counter, Karteikarte -->
+      <div class="ButtonsAndCard">
         <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
-        <div class="NichtErledigtButton">🟥</div>
-        <div class="ErledigtButton">🟩</div>
+        <div class="NichtErledigtButton" @click="markAsNichtErledigt">🟥</div>
+
+        <div class="Karteikarte" @click="flipCard">
+
+            <!--   <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p>   -->
+          Karteikarte Beispiel
+        </div>
+
+        <div class="ErledigtButton" @click="markAsErledigt">🟩</div>
         <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
       </div>
-      
-      <!-- Count bleibt unter der Karteikarte -->
-      <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
+
+      <!-- Fortschrittsanzeige -->
+      <div class="Count"> Anzeige Beispiel {{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
+
     </div>  
+
   </div>
-</body>
 <!-- HTML Teil Ende -->
 
 
@@ -48,13 +59,36 @@
       return {
         new_element_text: '',
         items:[],
+
+        countErledigt: 0,
+        countNichtErledigt: 0,
+
+        currentCountAnzahl: 1,
+        countAnzahl: 10,
+
       }
     },
+
     methods: {
       
       flipCard() {
         this.showDefinition = !this.showDefinition;
       },
+
+      markAsErledigt() {
+        if (this.currentCountAnzahl < this.countAnzahl) {
+        this.countErledigt += 1;
+        this.currentCountAnzahl += 1;
+        }
+      },
+
+      markAsNichtErledigt() {
+        if (this.currentCountAnzahl < this.countAnzahl) {
+        this.countNichtErledigt += 1;
+        this.currentCountAnzahl += 1;
+        }
+      },
+
       
 //       async fetchItems() {
  //       try {
@@ -90,7 +124,7 @@
 //            }
       },
       
-      loadSet(){
+      loadSet() {
         pass
       },
      
