@@ -7,24 +7,21 @@
 
 
 
-
-
 <!-- HTML Teil Anfang -->
+
+
 <body class="Background">
   <div id="app">
     
-    <!-- Zahnrad (zurück zum Menü) -->
-    <a href="input.html">
+    
+    <a href="input.html" @click="ReturnToMenu">
       <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu">
     </a>
-
-    <!-- Set Name -->
+ 
     <div class="SetName">{{ setName }} Setname Beispiel</div>
 
-    <!-- Set-Container -->
     <div class="Set">
       
-      <!-- Buttons, Counter, Karteikarte -->
       <div class="ButtonsAndCard">
         <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
         <div class="NichtErledigtButton" @click="markAsNichtErledigt">🟥</div>
@@ -39,14 +36,14 @@
         <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
       </div>
 
-      <!-- Fortschrittsanzeige -->
       <div class="Count"> Anzeige Beispiel {{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
 
     </div>  
 
   </div>
-<!-- HTML Teil Ende -->
 
+
+<!-- HTML Teil Ende -->
 
 
 
@@ -88,8 +85,24 @@
         this.currentCountAnzahl += 1;
         }
       },
-
       
+      returnToMenu() {
+        window.location.href = "input.html";  // Gleicher Effekt wie Klick auf Zahnrad
+      },
+
+      handleKeyPress(event) {
+      if (event.key === 'ArrowLeft') {
+        this.markAsNichtErledigt();
+      } else if (event.key === 'ArrowRight') {
+        this.markAsErledigt();
+      } else if (event.key === 'ArrowUp' || event.code === 'Space') {
+        event.preventDefault(); // Verhindert Scrollen bei Space
+        this.flipCard();
+      } else if (event.key === 'Escape') {
+        this.returnToMenu();
+      }
+    },
+
 //       async fetchItems() {
  //       try {
 //            const response = await fetch(`${API_BASE_URL}/api/items`, {
@@ -127,7 +140,14 @@
       loadSet() {
         pass
       },
-     
+
+    mounted() {
+      window.addEventListener('keydown', this.handleKeyPress);
+    },
+
+    beforeUnmount() {
+      window.removeEventListener('keydown', this.handleKeyPress);
+    }, 
     },
     
   ).mount('#app')
