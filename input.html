@@ -2,43 +2,41 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   </head>
-  <!-- HTML Teil -->
+  <!-- HTMasdfasfL Teil -->
 
 
   <body class="Background">
     <div id="app">
         
-      <div class="Enter">
+      <div class="input-bar">
         <input type="number" v-model="set"  @keyup.enter="load_set(Set)" placeholder="Set"><br>
+        <button @click="createSet">neu</button>
+      </div>
+      <div class="Enter">
         <input type="text" v-model="new_begriff"  @keyup.enter="focusNext(1)" placeholder="Begriff">
         <input type="text" v-model="new_definition" ref= "input1"@keyup.enter="add_definition(new_definition)" placeholder="Definition">
       </div>  
-
-       <!-- <input type="text" v-model="new_element_text" @keyup.enter="add_element(new_element_text)"><br/>
-        <div v-for="element in items" id="element">
-          <button v-if="!item.erledigt" :class="{erledigt: item.erledigt}"
-            @click="alsErledigtMarkieren(element)">Done
-          </button>
-          <b>{{ element.name }}</b><br>
-          <i>{{ element.anzahl }}</i>
-          <div id="buttons">
-            <div id="add_button" @click="add_amount(element)">+</div>
-            <div id="subtract_button" @click="subtract_amount(element)">-</div>
-          </div>
+      <div class="uebung-button" >
+        <button @click="startUebung">Üben</button>
+    </div>
+      <div class="Karteikarten-button">
+        <button @click="startUebung">Karteikarten</button>
       </div>
     </div>
-  </body>
-  HTML Teil Ende -->
+    
+
+    
   <script>
     const { createApp } = Vue // Muss sein um Vue zu verwenden, erstellt vue app
     const API_BASE_URL = 'http://127.0.0.1:5000';
   
     createApp({
-  
       data() { // Data -> Beschreibt die dynamischen Informationen, unserer App
         return {
           new_element_text: '',
           items:[],
+          new_begriff:"",
+          new_definition:"",
         }
   
       },
@@ -47,38 +45,29 @@
         focusNext(index) {
             this.$refs[`input${index}`]?.focus();
         },
- //       async fetchItems() {
-   //       try {
- //            const response = await fetch(`${API_BASE_URL}/api/items`, {
- //            method: 'GET',
- //            headers: {
- //              'Accept': 'application/json',
- //              'Access-Control-Allow-Origin':'*',
- //              }
- //                })
- //            this.items = await response.json()
- //            console.log(this.items)
- //            } catch (error) {
- //            console.error('Error fetching items:', error)
- //            }
- //        },
- //        async alsErledigtMarkieren(item){
-  //         item.erledigt=true
- //          try {
- //            const response = await fetch(`${API_BASE_URL}/api/items/${item.id}`, {
- //            method: 'Put',
- //            headers: {
- //              'Accept': 'application/json',
- //              'Access-Control-Allow-Origin':'*',
- //              body: json.stringify(item)
- //              }
- //                })
- //            const result=await response.json()
- //            this.items=result.items
+        async add_card(new_begriff,new_definition){
+          try{
+            const response =await fetch(`${API_BASE_URL}/api/add`,{
+            method:"PUT",
+            headers: {
+              'Accept': 'application/json',
+               'Access-Control-Allow-Origin':'*',
+               },
+               body:{
+                'vorderseite': this.new_begriff,
+                "rückseite":this.new_definition,
+                "erledigt":false,
+                "set_id":1
+
+               }
+            })
             
- //            } catch (error) {
-  //           console.error('Error fetching items:', error)
- //            }
+          }catch(error){
+            console.error('Error fetching items:', error)
+
+          }
+        }
+ 
         },
         
         clearInput() {
@@ -104,14 +93,7 @@
   
   </script>
 
-<style>
-  .Enter {
-    justify-content: center;
 
-  }
 
-  .Background {
-      background-color: rgb(166, 202, 236);
-  }
-
+}
 </style>
