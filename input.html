@@ -14,13 +14,21 @@
       </div>
       <div class="Enter">
         <input type="text" v-model="new_begriff"  @keyup.enter="focusNext(1)" placeholder="Begriff">
-        <input type="text" v-model="new_definition" ref= "input1"@keyup.enter="add_definition(new_definition)" placeholder="Definition">
+        <input type="text" v-model="new_definition" ref= "input1"@keyup.enter="add_definition(new_definition)" placeholder="Definition"><br>
+
       </div>  
-      <div class="uebung-button" >
-        <button @click="startUebung">Üben</button>
-    </div>
       <div class="Karteikarten-button">
         <button @click="startUebung">Karteikarten</button>
+      </div>
+      
+      <div class="buttons">
+        <div class="uebung-button">
+          <a href="set.html">
+            <button @click="startUebung">Üben</button>
+          </a>
+          </div>
+        </div>
+        
       </div>
     </div>
     
