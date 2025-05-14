@@ -6,9 +6,7 @@
 
 
 
-
 <!-- HTML Teil Anfang -->
-
 
 <body class="Background">
   <div id="app">
@@ -18,33 +16,24 @@
       <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu">
     </a>
  
-    <div class="SetName">{{ setName }} Setname Beispiel</div>
-
+    <div class="SetName">{{ set_name }} Setname Beispiel</div>
     <div class="Set">
       
       <div class="ButtonsAndCard">
         <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
         <div class="NichtErledigtButton" @click="markAsNichtErledigt">🟥</div>
-
         <div class="Karteikarte" @click="flipCard">
-
             <!--   <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p>   -->
           Karteikarte Beispiel
         </div>
-
         <div class="ErledigtButton" @click="markAsErledigt">🟩</div>
         <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
       </div>
-
       <div class="Count"> Anzeige Beispiel {{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
-
     </div>  
-
   </div>
 
-
 <!-- HTML Teil Ende -->
-
 
 
 
@@ -56,29 +45,23 @@
       return {
         new_element_text: '',
         items:[],
-
         countErledigt: 0,
         countNichtErledigt: 0,
-
         currentCountAnzahl: 1,
         countAnzahl: 10,
-
       }
     },
-
     methods: {
       
       flipCard() {
         this.showDefinition = !this.showDefinition;
       },
-
       markAsErledigt() {
         if (this.currentCountAnzahl < this.countAnzahl) {
         this.countErledigt += 1;
         this.currentCountAnzahl += 1;
         }
       },
-
       markAsNichtErledigt() {
         if (this.currentCountAnzahl < this.countAnzahl) {
         this.countNichtErledigt += 1;
@@ -89,7 +72,6 @@
       returnToMenu() {
         window.location.href = "input.html";  // Gleicher Effekt wie Klick auf Zahnrad
       },
-
       handleKeyPress(event) {
       if (event.key === 'ArrowLeft') {
         this.markAsNichtErledigt();
@@ -140,11 +122,9 @@
       loadSet() {
         pass
       },
-
     mounted() {
       window.addEventListener('keydown', this.handleKeyPress);
     },
-
     beforeUnmount() {
       window.removeEventListener('keydown', this.handleKeyPress);
     }, 

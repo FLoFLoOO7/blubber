@@ -34,7 +34,6 @@ html, body {
     gap: 24px;
 }
 
-
 .Karteikarte {
     width: min(90vw, 500px);
     height: auto;
@@ -52,7 +51,6 @@ html, body {
     cursor: pointer;
 }
 
-
 .ButtonsAndCard {
     display: flex;
     justify-content: center;
@@ -60,7 +58,6 @@ html, body {
     gap: 20px;
     width: 100%;
 }
-
 
 .ErledigtButton, .NichtErledigtButton {
     width: 70px;
@@ -80,20 +77,18 @@ html, body {
     line-height: 70px;
 }
 
-
 .ErledigtCounter, .NichtErledigtCounter {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-
 .Count {
     margin-top: 2vh;
     text-align: center;
 }
 
-                                                /* CHATGPT */
+/* Responsive Anpassung für kleine Bildschirme */
 @media (max-width: 600px) {
     .ButtonsAndCard {
         flex-direction: row;
@@ -103,7 +98,6 @@ html, body {
         gap: 10px;
     }
 
-    
     .ButtonsAndCard > * {
         order: initial;
     }
@@ -139,4 +133,3 @@ html, body {
         text-align: center;
     }
 }
-                                                /* CHATGPT */
