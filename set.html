@@ -7,35 +7,43 @@
 
 
 
-
-
 <!-- HTML Teil Anfang -->
+
+
 <body class="Background">
   <div id="app">
-    <a href="input.html">
+    
+    
+    <a href="input.html" @click="ReturnToMenu">
       <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu">
     </a>
+ 
     <div class="SetName">{{ setName }} Setname Beispiel</div>
-    <div class="Set">
-      <div class="Karteikarte" @click="flipCard">
-        Karteikarte Beispiel
-      </div>
 
-      <!-- Buttons und Counter nebeneinander zur Karteikarte bei großen Bildschirmen -->
-      <div class="ButtonsAndCounters">
+    <div class="Set">
+      
+      <div class="ButtonsAndCard">
         <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
-        <div class="NichtErledigtButton">🟥</div>
-        <div class="ErledigtButton">🟩</div>
+        <div class="NichtErledigtButton" @click="markAsNichtErledigt">🟥</div>
+
+        <div class="Karteikarte" @click="flipCard">
+
+            <!--   <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p>   -->
+          Karteikarte Beispiel
+        </div>
+
+        <div class="ErledigtButton" @click="markAsErledigt">🟩</div>
         <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
       </div>
-      
-      <!-- Count bleibt unter der Karteikarte -->
-      <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
-    </div>  
-  </div>
-</body>
-<!-- HTML Teil Ende -->
 
+      <div class="Count"> Anzeige Beispiel {{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
+
+    </div>  
+
+  </div>
+
+
+<!-- HTML Teil Ende -->
 
 
 
@@ -48,15 +56,54 @@
       return {
         new_element_text: '',
         items:[],
+
+        countErledigt: 0,
+        countNichtErledigt: 0,
+
+        currentCountAnzahl: 1,
+        countAnzahl: 10,
+
       }
     },
+
     methods: {
       
       flipCard() {
         this.showDefinition = !this.showDefinition;
       },
+
+      markAsErledigt() {
+        if (this.currentCountAnzahl < this.countAnzahl) {
+        this.countErledigt += 1;
+        this.currentCountAnzahl += 1;
+        }
+      },
+
+      markAsNichtErledigt() {
+        if (this.currentCountAnzahl < this.countAnzahl) {
+        this.countNichtErledigt += 1;
+        this.currentCountAnzahl += 1;
+        }
+      },
       
-//       async fetchItems() {
+      returnToMenu() {
+        window.location.href = "input.html";  // Gleicher Effekt wie Klick auf Zahnrad
+      },
+
+      handleKeyPress(event) {
+      if (event.key === 'ArrowLeft') {
+        this.markAsNichtErledigt();
+      } else if (event.key === 'ArrowRight') {
+        this.markAsErledigt();
+      } else if (event.key === 'ArrowUp' || event.code === 'Space') {
+        event.preventDefault(); // Verhindert Scrollen bei Space
+        this.flipCard();
+      } else if (event.key === 'Escape') {
+        this.returnToMenu();
+      }
+    },
+ 
+//    h   async fetchItems() {
  //       try {
 //            const response = await fetch(`${API_BASE_URL}/api/items`, {
 //            method: 'GET',
@@ -90,10 +137,17 @@
 //            }
       },
       
-      loadSet(){
+      loadSet() {
         pass
       },
-     
+
+    mounted() {
+      window.addEventListener('keydown', this.handleKeyPress);
+    },
+
+    beforeUnmount() {
+      window.removeEventListener('keydown', this.handleKeyPress);
+    }, 
     },
     
   ).mount('#app')

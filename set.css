@@ -34,7 +34,7 @@ html, body {
     gap: 24px;
 }
 
-/* Karteikarte */
+
 .Karteikarte {
     width: min(90vw, 500px);
     height: auto;
@@ -52,8 +52,8 @@ html, body {
     cursor: pointer;
 }
 
-/* Container für Buttons und Counter */
-.ButtonsAndCounters {
+
+.ButtonsAndCard {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -61,7 +61,7 @@ html, body {
     width: 100%;
 }
 
-/* Buttons */
+
 .ErledigtButton, .NichtErledigtButton {
     width: 70px;
     height: 70px;
@@ -80,30 +80,53 @@ html, body {
     line-height: 70px;
 }
 
-/* Counter */
+
 .ErledigtCounter, .NichtErledigtCounter {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+
 .Count {
     margin-top: 2vh;
     text-align: center;
 }
 
-/* Anpassungen für kleine Bildschirme */
+                                                /* CHATGPT */
 @media (max-width: 600px) {
-    .Set {
-        flex-direction: column;
-        align-items: center; /* Zentriert alles */
-    }
-
-    /* Container für Buttons und Counter untereinander auf kleinen Bildschirmen */
-    .ButtonsAndCounters {
-        flex-direction: column;
+    .ButtonsAndCard {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         align-items: center;
         gap: 10px;
+    }
+
+    
+    .ButtonsAndCard > * {
+        order: initial;
+    }
+
+    .Karteikarte {
+        order: -1;
+        margin-bottom: 16px;
+    }
+
+    .NichtErledigtCounter {
+        order: 1;
+    }
+
+    .NichtErledigtButton {
+        order: 2;
+    }
+
+    .ErledigtButton {
+        order: 3;
+    }
+
+    .ErledigtCounter {
+        order: 4;
     }
 
     .ErledigtButton, .NichtErledigtButton {
@@ -112,8 +135,8 @@ html, body {
         line-height: 60px;
     }
 
-    /* Setzt Counter unter die Buttons */
     .NichtErledigtCounter, .ErledigtCounter {
         text-align: center;
     }
 }
+                                                /* CHATGPT */
