@@ -7,30 +7,41 @@
 
   <body class="Background">
     <div id="app">
-        
+      
       <div class="input-bar">
-        <input type="number" v-model="set"  @keyup.enter="load_set(Set)" placeholder="Set"><br>
-        <button @click="createSet">neu</button>
+        <input type="number" v-model="set"  @keyup.enter="loadset()" placeholder="Set"><br>
+        <input type="text" v-model="neues_set"  @keyup.enter="createSet()" placeholder="Neues Set"><br>
+        <button @click="createSet()">neu</button>
       </div>
       <div class="Enter">
         <input type="text" v-model="new_begriff"  @keyup.enter="focusNext(1)" placeholder="Begriff">
-        <input type="text" v-model="new_definition" ref= "input1"@keyup.enter="add_definition(new_definition)" placeholder="Definition"><br>
+        <input type="text" v-model="new_definition" ref= "input1"@keyup.enter="add_card(new_definition)" placeholder="Definition"><br>
 
       </div>  
-      <div class="Karteikarten-button">
-        <button @click="startUebung">Karteikarten</button>
+      <!-- ChatGPT-->
+      <div class="card-container" v-if="items.length > 0">
+        <div class="card" v-for="item in items" :key="item.id">
+          <div class="card-side">{{ item.Vorderseite }}</div>
+          <div class="card-divider"></div>
+          <div class="card-side">{{ item.ruckseite }}</div>
+        </div>
+      </div>
+      <!-- ChatGPT-->
+      <div class="sets-button">
+        <button @click="loadset()">Sets</button>
       </div>
       
       <div class="buttons">
+       
         <div class="uebung-button">
           <a href="set.html">
-            <button @click="startUebung">Üben</button>
+           <button @click="startUebung()">Üben</button>
           </a>
-          </div>
-        </div>
+       </div>
+      </div>
         
       </div>
-    </div>
+   
     
 
     
@@ -45,6 +56,8 @@
           items:[],
           new_begriff:"",
           new_definition:"",
+          set:null,
+          neues_set:"",
         }
   
       },
@@ -53,30 +66,71 @@
         focusNext(index) {
             this.$refs[`input${index}`]?.focus();
         },
-        async add_card(new_begriff,new_definition){
-          try{
-            const response =await fetch(`${API_BASE_URL}/api/add`,{
-            method:"PUT",
-            headers: {
-              'Accept': 'application/json',
-               'Access-Control-Allow-Origin':'*',
-               },
-               body:{
-                'vorderseite': this.new_begriff,
-                "rückseite":this.new_definition,
+        async add_card(){
+          console.log(this.new_begriff, this.new_definition, this.set)
+          let card={
+                'Vorderseite': this.new_begriff,
+                "ruckseite":this.new_definition,
                 "erledigt":false,
-                "set_id":1
+                "SET_ID":this.set,
 
                }
+          try{
+            const response =await fetch(`${API_BASE_URL}/api/add_card`,{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+               },
+               body:JSON.stringify(card)
+               
             })
-            
+            console.log(response)
+          this.body=await response.json() 
+
           }catch(error){
             console.error('Error fetching items:', error)
 
           }
-        }
- 
+          this.new_begriff=""
+          this.new_definition=""
         },
+        async createSet(){
+          let set ={
+            "set":this.set,
+            "set_name":this.neues_set,
+          }
+          try{
+            const response =await fetch(`${API_BASE_URL}/api/add_set`,{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+               },
+               body:JSON.stringify(set)
+               
+            })
+            console.log(response)
+            this.body=await response.json() 
+            this.neues_set=""
+          }catch(error){
+            console.error('Error fetching items:', error)
+
+          }
+        
+                
+        },
+        async loadset() {
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/cards/${this.set}`)
+            const data = await response.json();
+            this.items = data; 
+            console.log(data)
+          } catch (error) {
+            console.error('Error fetching items:', error)
+          }
+        },
+
+        
+        
         
         clearInput() {
           this.new_element_text = ''
@@ -88,16 +142,18 @@
           })
           this.clearInput()
         },
+        startUebung(){
+          console.log("Starting Übung");
+        },
         loadSet(){
           pass
 
         },
-        add_definition(new_begriff,new_definition){
-            
-        },
+        
+
       },
       
-    ).mount('#app')
+    }).mount('#app')
   
   </script>
 
