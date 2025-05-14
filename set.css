@@ -3,11 +3,6 @@ html, body {
     margin: 0;
 }
 
-#app {
-    font-style: italic;
-}
-
-
 .Background {
     background-color: rgb(166, 202, 236);
     display: flex;
