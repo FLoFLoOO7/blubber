@@ -34,9 +34,7 @@
       <div class="buttons">
        
         <div class="uebung-button">
-          <a href="set.html">
            <button @click="startUebung()">Üben</button>
-          </a>
        </div>
       </div>
         
@@ -142,8 +140,13 @@
           })
           this.clearInput()
         },
+        //Florian (mit Hilfe von Nicola)
         startUebung(){
-          console.log("Starting Übung");
+          if (this.set) {
+            window.location.href = `set.html?set_id=${this.set}`;
+          } else {
+            alert("Bitte wählen zuerst ein Set aus.");
+          }
         },
         loadSet(){
           pass
