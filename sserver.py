@@ -76,5 +76,12 @@ def get_sets():
     sets = response.data
     return jsonify(sets)
 
+
+@app.route("/api/erledigt", methods=["Put"])
+def markAsErledigt():
+    responseF =request.get_json()
+    set_id=responseF[id]
+    response = supabase.table("Karteikarten").update({"erledigt": False}).eq("id", set_id).execute()
+    
 if __name__ == '__main__':
     app.run(debug=True)
