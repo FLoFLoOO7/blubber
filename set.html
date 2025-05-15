@@ -1,3 +1,8 @@
+
+
+<!--   Luka   -->
+
+
 <head>
   <link rel="stylesheet" href="set.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -21,12 +26,20 @@
         <div class="ErledigtButton" @click="markAsErledigt">🟩</div>
         <div class="ErledigtCounter">{{ countErledigt }}</div>
       </div>
+
       <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }}</div>
-      <div class="ZurückButton" @click="goBackOneCard">⬅️</div>
+
+      <div class="ZurückFeld">
+        <div class="ZurückButton" @click="goBackOneCard">⬅️</div>
+      </div>
+    </div>
+
+    <div class="ResetButton" @click="resetAllCards">
+      🔄 Reset
     </div>
   </div>
 
-   <script>
+  <script>
     const { createApp } = Vue;
     const API_BASE_URL = 'http://127.0.0.1:5000';
 
@@ -34,6 +47,7 @@
       data() {
         return {
           items: [],
+          originalItems: [],
           currentIndex: 0,
           showDefinition: false,
           countErledigt: 0,
@@ -81,6 +95,8 @@
           this.currentIndex++;
           this.showDefinition = false;
         },
+
+        // CHATGPT
         goBackOneCard() {
           if (this.currentIndex === 0) return;
 
@@ -94,18 +110,34 @@
             this.countNichtErledigt--;
           }
 
-          previousCard.erledigt = undefined;
+          previousCard.erledigt = false;
           this.showDefinition = false;
         },
         restartWithIncorrectCards() {
           const falsch = this.items.filter(item => item.erledigt === false);
 
           if (falsch.length === 0) {
-            alert("Alle Karten erledigt! 🎉");
+            alert("Alle Karten erledigt, zum Neustarten Knopf unten rechts klicken!");
+            this.items = [];
+            this.currentIndex = 0;
+            this.showDefinition = false;
             return;
           }
 
           this.items = falsch.map(item => ({ ...item }));
+          this.currentIndex = 0;
+          this.countErledigt = 0;
+          this.countNichtErledigt = 0;
+          this.showDefinition = false;
+        },
+        resetAllCards() {
+          this.items = this.originalItems.map(card => ({
+            ...card,
+            erledigt: false
+          }));
+          // CHATGPT
+
+
           this.currentIndex = 0;
           this.countErledigt = 0;
           this.countNichtErledigt = 0;
@@ -126,17 +158,25 @@
             this.goBackOneCard();
           } else if (event.key === 'Escape') {
             this.returnToMenu();
+          } else if (event.key === 'Shift') {
+            event.preventDefault();
+            this.resetAllCards();
           }
         },
+
+        // CHATGPT
         getSetIdFromUrl() {
           const params = new URLSearchParams(window.location.search);
           return params.get("set");
+        // CHATGPT
+
         },
         async fetchCards() {
           try {
             const response = await fetch(`${API_BASE_URL}/api/cards/${this.setId}`);
             const data = await response.json();
-            this.items = data.map(card => ({ ...card, erledigt: undefined }));
+            this.originalItems = data;
+            this.items = data.map(card => ({ ...card, erledigt: false }));
           } catch (error) {
             console.error('Fehler beim Laden der Karten:', error);
           }
