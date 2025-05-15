@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <head>
   <link rel="stylesheet" href="set.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -14,29 +14,32 @@
   <div id="app">
     
     
-    <a href="input.html" @click="ReturnToMenu">
+    <a href="input.html" @click="returnToMenu">
       <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu">
     </a>
  
-    <div class="SetName">{{ setName }} Setname Beispiel</div>
+    <div class="SetName">{{ setName }}</div>
 
     <div class="Set">
       
       <div class="ButtonsAndCard">
-        <div class="NichtErledigtCounter">{{ countNichtErledigt }} Zahl</div>
+        <div class="NichtErledigtCounter">{{ countNichtErledigt }}</div>
         <div class="NichtErledigtButton" @click="markAsNichtErledigt">🟥</div>
 
+        <!-- Florian (mit Hilfe von Nicola) -->
         <div class="Karteikarte" @click="flipCard">
-
-            <!--   <p>{{ showDefinition ? currentCard.definition : currentCard.begriff }}</p>   -->
-          Karteikarte Beispiel
+            <p v-if="currentCard">{{ showDefinition ? currentCard.ruckseite : currentCard.Vorderseite }}</p>
+            <p v-else-if="cards.length > 0 && !currentCard && currentCountAnzahl >= countAnzahl">Set abgeschlossen!</p>
+            <p v-else-if="!setId">Keine set ID</p>
+            <p v-else-if="cards.length === 0 && setId && !loading">Keine Karten in diesem Set gefunden.</p>
+            <p v-else>Lade Karte...</p>
         </div>
 
         <div class="ErledigtButton" @click="markAsErledigt">🟩</div>
-        <div class="ErledigtCounter">{{ countErledigt }} Zahl</div>
+        <div class="ErledigtCounter">{{ countErledigt }}</div>
       </div>
 
-      <div class="Count"> Anzeige Beispiel {{ currentCountAnzahl }} / {{ countAnzahl }} Anzeige Beispiel</div>
+      <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }}</div>
 
     </div>  
 
@@ -54,101 +57,142 @@
   createApp({
     data() { // Data -> Beschreibt die dynamischen Informationen, unserer App
       return {
-        new_element_text: '',
-        items:[],
+        setName: '',
+        cards: [],
+        currentCard: null,
+        currentIndex: -1,
+        showDefinition: false,
+        setId: null,
+        loading: true,
 
         countErledigt: 0,
         countNichtErledigt: 0,
 
-        currentCountAnzahl: 1,
-        countAnzahl: 10,
-
+        currentCountAnzahl: 0,
+        countAnzahl: 0,
       }
     },
 
     methods: {
-// Florian & Nicola      
+      //Florian (mit Hilfe von Nicola)
+      getSetId() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('set_id');
+      },
+
+      async fetchSetDetails(setId) {
+        if (!setId) return;
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/sets`);
+          const sets = await response.json();
+          const currentSet = sets.find(s => s.ID == setId); 
+          if (currentSet) {
+            this.setName = currentSet.NAME;
+          } else {
+            this.setName = 'Set nicht gefunden'; 
+          }
+        } catch (error) {
+          console.error(error);
+          this.setName = 'Fehler beim Laden des Sets';
+        }
+      },
+
+      async fetchCards(setId) {
+        if (!setId) return;
+        this.loading = true;
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/cards/${setId}`);
+          this.cards = await response.json();
+          if (this.cards && this.cards.length > 0) {
+            this.countAnzahl = this.cards.length;
+            this.currentIndex = 0;
+            this.updateCurrentCardAndCount();
+          } else {
+            this.cards = []; 
+            this.countAnzahl = 0;
+            this.currentCard = null;
+            this.currentCountAnzahl = 0;
+          }
+        } catch (error) {
+          console.error('Error fetching cards:', error);
+          this.cards = [];
+          this.countAnzahl = 0;
+        } finally {
+            this.loading = false;
+        }
+      },
+
+      updateCurrentCardAndCount() {
+        if (this.currentIndex >= 0 && this.currentIndex < this.cards.length) {
+          this.currentCard = this.cards[this.currentIndex];
+          this.currentCountAnzahl = this.currentIndex + 1;
+          this.showDefinition = false;
+        } else {
+          this.currentCard = null;
+        }
+      },
+      
       flipCard() {
-        this.showDefinition = !this.showDefinition;
+        if (this.currentCard) {
+          this.showDefinition = !this.showDefinition;
+        }
+      },
+
+      moveToNextCard() {
+        if (this.currentIndex < this.cards.length - 1) {
+          this.currentIndex++;
+          this.updateCurrentCardAndCount();
+        } else {
+          this.currentCard = null; 
+          this.currentCountAnzahl = this.cards.length; 
+          alert('Set abgeschlossen!\nErledigt: ' + this.countErledigt + '\nNicht Erledigt: ' + this.countNichtErledigt);
+        }
       },
 
       markAsErledigt() {
-        if (this.currentCountAnzahl < this.countAnzahl) {
-        this.countErledigt += 1;
-        this.currentCountAnzahl += 1;
-        }
+        if (!this.currentCard) return;
+        this.countErledigt++;
+        this.moveToNextCard();
       },
 
       markAsNichtErledigt() {
-        if (this.currentCountAnzahl < this.countAnzahl) {
-        this.countNichtErledigt += 1;
-        this.currentCountAnzahl += 1;
-        }
+        if (!this.currentCard) return;
+        this.countNichtErledigt++;
+        this.moveToNextCard();
       },
       
       returnToMenu() {
-        window.location.href = "input.html";  // Gleicher Effekt wie Klick auf Zahnrad
+        window.location.href = "input.html";
       },
 
       handleKeyPress(event) {
-      if (event.key === 'ArrowLeft') {
-        this.markAsNichtErledigt();
-      } else if (event.key === 'ArrowRight') {
-        this.markAsErledigt();
-      } else if (event.key === 'ArrowUp' || event.code === 'Space') {
-        event.preventDefault(); // Verhindert Scrollen bei Space
-        this.flipCard();
-      } else if (event.key === 'Escape') {
-        this.returnToMenu();
+        if (event.key === 'ArrowLeft') {
+          this.markAsNichtErledigt();
+        } else if (event.key === 'ArrowRight') {
+          this.markAsErledigt();
+        } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+          event.preventDefault(); 
+          this.flipCard();
+        } else if (event.key === 'Escape') {
+          this.returnToMenu();
+        }
+      },
+    }, 
+    
+    async mounted() {
+      this.setId = this.getSetId();
+      if (this.setId) {
+        await this.fetchSetDetails(this.setId);
+        await this.fetchCards(this.setId);
+      } else {
+        this.setName = 'Kein Set gefunden';
+        this.loading = false;
       }
-    },
-//bis hier
-//    h   async fetchItems() {
- //       try {
-//            const response = await fetch(`${API_BASE_URL}/api/items`, {
-//            method: 'GET',
-//            headers: {
-//              'Accept': 'application/json',
-//              'Access-Control-Allow-Origin':'*',
-//              }
-//                })
-//            this.items = await response.json()
-//            console.log(this.items)
-//            } catch (error) {
-//            console.error('Error fetching items:', error)
-//            }
-//        },
-//        async alsErledigtMarkieren(item){
-//         item.erledigt=true
-//          try {
-//            const response = await fetch(`${API_BASE_URL}/api/items/${item.id}`, {
-//            method: 'Put',
-//            headers: {
-//              'Accept': 'application/json',
-//              'Access-Control-Allow-Origin':'*',
-//              body: json.stringify(item)
-//              }
-//                })
-//            const result=await response.json()
-//            this.items=result.items
-          
-//            } catch (error) {
-//           console.error('Error fetching items:', error)
-//            }
-      },
-      
-      loadSet() {
-        pass
-      },
-
-    mounted() {
       window.addEventListener('keydown', this.handleKeyPress);
     },
 
     beforeUnmount() {
       window.removeEventListener('keydown', this.handleKeyPress);
     }, 
-    },
-    
-  ).mount('#app')
+  }).mount('#app')
 </script>
