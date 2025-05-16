@@ -79,9 +79,17 @@ def get_sets():
 
 @app.route("/api/erledigt", methods=["Put"])
 def markAsErledigt():
+    responseF = request.get_json()
+    card_id = responseF.get("id")
+    if card_id is None:
+        return jsonify({"error": "No card ID provided"}), 400
+
+    response = supabase.table("Karteikarten").update({"erledigt": True}).eq("id", card_id).execute()
+@app.route("/api/set_reset", methods=["Put"])
+def reset():
     responseF =request.get_json()
-    set_id=responseF[id]
-    response = supabase.table("Karteikarten").update({"erledigt": False}).eq("id", set_id).execute()
     
+    response = supabase.table("Karteikarten").update({"erledigt": False}).eq("SET_ID", responseF).execute()
+
 if __name__ == '__main__':
     app.run(debug=True)

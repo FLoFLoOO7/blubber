@@ -149,11 +149,30 @@
         }
       },
 
-      markAsErledigt() {
-        if (!this.currentCard) return;
-        this.countErledigt++;
-        this.moveToNextCard();
+      async markAsErledigt() {
+  if (!this.currentCard) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/erledigt`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
       },
+      body: JSON.stringify({ id: this.currentCard.id })
+    });
+
+    if (!response.ok) {
+      console.error('Fehler beim Markieren als erledigt:', await response.text());
+      return;
+    }
+
+    this.countErledigt++;
+    this.moveToNextCard();
+
+  } catch (error) {
+    console.error('Netzwerkfehler:', error);
+  }
+},
 
       markAsNichtErledigt() {
         if (!this.currentCard) return;
