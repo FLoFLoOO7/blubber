@@ -14,7 +14,7 @@ response = (
     .execute()
     
 )
-print(response)
+
 
 
 app = Flask("Mein erster Server")

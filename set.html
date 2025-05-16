@@ -42,7 +42,14 @@
       <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }}</div>
 
     </div>  
+    <div class="ZurückFeld">
+        <div class="ZurückButton" @click="goBackOneCard">⬅️</div>
+      </div>
+    </div>
 
+    <div class="ResetButton" @click="resetAllCards">
+      🔄 Reset
+    </div>
   </div>
 
 
@@ -73,7 +80,54 @@
       }
     },
 
-    methods: {
+    methods: {//ChatGPT
+      goBackOneCard() {
+
+          if (this.currentIndex === 0) return;
+
+          this.currentIndex--;
+
+          const previousCard = this.items[this.currentIndex];
+
+          if (previousCard.erledigt === true) {
+            this.countErledigt--;
+          } else if (previousCard.erledigt === false) {
+            this.countNichtErledigt--;
+          }
+
+          previousCard.erledigt = false;
+          this.showDefinition = false;
+        },
+        restartWithIncorrectCards() {
+          const falsch = this.items.filter(item => item.erledigt === false);
+
+          if (falsch.length === 0) {
+            alert("Alle Karten erledigt, zum Neustarten Knopf unten rechts klicken!");
+            this.items = [];
+            this.currentIndex = 0;
+            this.showDefinition = false;
+            return;
+          }
+
+          this.items = falsch.map(item => ({ ...item }));
+          this.currentIndex = 0;
+          this.countErledigt = 0;
+          this.countNichtErledigt = 0;
+          this.showDefinition = false;
+        },
+        resetAllCards() {
+          this.items = this.originalItems.map(card => ({
+            ...card,
+            erledigt: false
+          }));
+          // CHATGPT
+
+
+          this.currentIndex = 0;
+          this.countErledigt = 0;
+          this.countNichtErledigt = 0;
+          this.showDefinition = false;
+        },
       //Florian (mit Hilfe von Nicola)
       getSetId() {
         const params = new URLSearchParams(window.location.search);
@@ -160,6 +214,7 @@
       },
       body: JSON.stringify({ id: this.currentCard.id })
     });
+    console.log(body)
 
     if (!response.ok) {
       console.error('Fehler beim Markieren als erledigt:', await response.text());
@@ -173,6 +228,14 @@
     console.error('Netzwerkfehler:', error);
   }
 },
+
+
+//markAsErledigt() {
+//       if (!this.currentCard) return;
+//      this.countErledigt++;
+//      this.moveToNextCard();
+//    },
+
 
       markAsNichtErledigt() {
         if (!this.currentCard) return;

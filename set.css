@@ -1,6 +1,8 @@
+
 html, body {
     height: 100%;
     margin: 0;
+    font-family: sans-serif;
 }
 
 .Background {
@@ -23,6 +25,7 @@ html, body {
 .SetName {
     margin-top: 8vh;
     text-align: center;
+    font-size: x-large;
 }
 
 .Set {
@@ -33,7 +36,6 @@ html, body {
     margin-bottom: 2vh;
     gap: 24px;
 }
-
 
 .Karteikarte {
     width: min(90vw, 500px);
@@ -50,8 +52,8 @@ html, body {
     text-align: center;
     transition: all 0.15s ease;
     cursor: pointer;
+    font-size: xxx-large;
 }
-
 
 .ButtonsAndCard {
     display: flex;
@@ -60,7 +62,6 @@ html, body {
     gap: 20px;
     width: 100%;
 }
-
 
 .ErledigtButton, .NichtErledigtButton {
     width: 70px;
@@ -80,20 +81,58 @@ html, body {
     line-height: 70px;
 }
 
-
 .ErledigtCounter, .NichtErledigtCounter {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: xx-large;
 }
-
 
 .Count {
     margin-top: 2vh;
     text-align: center;
+    font-size: x-large;
 }
 
-                                                /* CHATGPT */
+.ZurückFeld {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.ZurückButton {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid black;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    font-size: x-large;
+    line-height: 60px;
+}
+
+.ResetButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    background-color: white;
+    border: 3px solid black;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    font-size: large;
+}
+
+
+/* CHATGPT*/
 @media (max-width: 600px) {
     .ButtonsAndCard {
         flex-direction: row;
@@ -103,7 +142,6 @@ html, body {
         gap: 10px;
     }
 
-    
     .ButtonsAndCard > * {
         order: initial;
     }
@@ -138,5 +176,6 @@ html, body {
     .NichtErledigtCounter, .ErledigtCounter {
         text-align: center;
     }
+
 }
-                                                /* CHATGPT */
+/* CHATGPT*/
