@@ -17,7 +17,7 @@
         <input type="text" v-model="new_begriff"  @keyup.enter="focusNext(1)" placeholder="Begriff">
         <input type="text" v-model="new_definition" ref= "input1"@keyup.enter="add_card(new_definition)" placeholder="Definition"><br>
 
-      </div>  
+      </div>
       <!-- ChatGPT-->
       <div class="card-container" v-if="items.length > 0">
         <div class="card" v-for="item in items" :key="item.id">
@@ -115,7 +115,6 @@
             console.error('Error fetching items:', error)
 
           }
-        
                 
         },
         async loadset() {
