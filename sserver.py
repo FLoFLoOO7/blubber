@@ -83,25 +83,18 @@ def get_sets():
 
 @app.route("/api/erledigt", methods=["PUT"])
 def markAsErledigt():
-    try:
-        data = request.get_json()
-        card_id = data.get("id")
-        if not card_id:
-            response = jsonify({"error": "No card ID provided"})
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            return response, 400
+    data = request.get_json()
+    card_id = data.get("id")
+    #Chatgpt
+    if not card_id:
+        return jsonify({"error": "No card ID provided"}), 400
+    #ChaGPT
+    supabase.table("Karteikarten").update({"erledigt": True}).eq("id", card_id).execute()
 
-        supabase.table("Karteikarten").update({"erledigt": True}).eq("id", card_id).execute()
-        
-        response = jsonify({"message": "Card marked as erledigt"})
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        return response, 200
-    except Exception as e:
-        # <-- WICHTIG: Fehler sichtbar machen
-        print("Fehler in /api/erledigt:", str(e))
-        response = jsonify({"error": str(e)})
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        return response, 500
+    response = jsonify({"message": "Card marked as erledigt"})
+    response.headers.add("Access-Control-Allow-Origin", "*")  
+    return response, 200
+
 
 
     
