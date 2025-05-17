@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -11,14 +12,11 @@
     <a href="input.html">
       <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu" />
     </a>
-
     <div class="SetName">{{ setName }}</div>
-
     <div class="Set">
       <div class="ButtonsAndCard">
         <div class="NichtErledigtCounter">{{ countNichtErledigt }}</div>
         <div class="NichtErledigtButton" @click="markAsNichtErledigt">🟥</div>
-
         <div class="Karteikarte" @click="flipCard">
           <p v-if="currentCard">{{ showDefinition ? currentCard.ruckseite : currentCard.Vorderseite }}</p>
           <p v-else-if="cards.length > 0 && !currentCard && currentCountAnzahl >= countAnzahl">Set abgeschlossen!</p>
@@ -26,25 +24,19 @@
           <p v-else-if="cards.length === 0 && setId && !loading">Keine Karten in diesem Set gefunden.</p>
           <p v-else>Lade Karte...</p>
         </div>
-
         <div class="ErledigtButton" @click="markAsErledigt">🟩</div>
         <div class="ErledigtCounter">{{ countErledigt }}</div>
       </div>
-
       <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }}</div>
     </div>
-
     <div class="ZurückFeld">
       <div class="ZurückButton" @click="goBackOneCard">⬅️</div>
     </div>
     <button class="ResetButton" @click="resetAllCards">🔄 Reset</button>
-
   </div>
-
   <script>
     const { createApp } = Vue;
     const API_BASE_URL = "http://127.0.0.1:5000";
-
     createApp({
       data() {
         return {
@@ -68,9 +60,13 @@
           if (this.currentIndex === 0) return;
           this.currentIndex--;
           const previousCard = this.cards[this.currentIndex];
-          if (previousCard.erledigt === true) this.countErledigt--;
-          else this.countNichtErledigt--;
-          previousCard.erledigt = false;
+          if (previousCard.erledigt === true) {
+            this.countErledigt--;
+            previousCard.erledigt = null;
+          } else if (previousCard.erledigt === false) {
+            this.countNichtErledigt--;
+            previousCard.erledigt = null;
+          }
           this.showDefinition = false;
           this.updateCurrentCardAndCount();
         },
@@ -78,37 +74,34 @@
         //Florian
         async resetAllCards() {
           if (!this.setId) return;
-
-          try {const response = await fetch(`${API_BASE_URL}/api/set_reset`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ SET_ID: parseInt(this.setId) })
-          });
-          await this.fetchCards(this.setId);
-
-          this.countErledigt = 0;
-          this.countNichtErledigt = 0;
-          this.currentIndex = 0;
-          this.updateCurrentCardAndCount();
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/set_reset`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ SET_ID: parseInt(this.setId) })
+            });
+            await this.fetchCards(this.setId);
+            this.countErledigt = 0;
+            this.countNichtErledigt = 0;
+            this.currentIndex = 0;
+            this.updateCurrentCardAndCount();
           } catch (error) {
             console.error("Fehler beim Reset:", error);
-
           }
         },
         //Florian
-
-        
+        // Mit CHATGPT wurde " || params.get("set"); " hinzugefügt
         getSetId() {
           const params = new URLSearchParams(window.location.search);
-          return params.get("set_id");
+          return params.get("set_id") || params.get("set");
         },
-
+        // CHATGPT
         async fetchSetDetails(setId) {
           try {
             const response = await fetch(`${API_BASE_URL}/api/sets`);
             const sets = await response.json();
-            const currentSet = sets.find(s => s.ID == setId);
-            this.setName = currentSet ? currentSet.NAME : "Set nicht gefunden";
+            const currentSet = sets.find(s => s.set == setId);
+            this.setName = currentSet ? currentSet.set_name : "Set nicht gefunden";
           } catch (error) {
             console.error(error);
             this.setName = "Fehler beim Laden des Sets";
@@ -176,6 +169,7 @@
             if (!response.ok) throw new Error(await response.text());
             //ChatGPT
             this.countErledigt++;
+            this.currentCard.erledigt = true;
             this.moveToNextCard();
           } catch (error) {
             console.error("Fehler beim Markieren als erledigt:", error);
@@ -184,10 +178,14 @@
         markAsNichtErledigt() {
           if (!this.currentCard) return;
           this.countNichtErledigt++;
+          this.currentCard.erledigt = false;
           this.moveToNextCard();
         },
         //Florian
         //Luka
+        returnToMenu() {
+          window.location.href = "input.html";
+        },
         handleKeyPress(event) {
           if (event.key === 'ArrowLeft') {
             this.markAsNichtErledigt();
@@ -199,6 +197,7 @@
           } else if (event.key === 'ArrowDown') {
             this.goBackOneCard();
           } else if (event.key === 'Escape') {
+            event.preventDefault();
             this.returnToMenu();
           } else if (event.key === 'Shift') {
             event.preventDefault();
