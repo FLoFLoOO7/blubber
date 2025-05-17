@@ -61,14 +61,16 @@ def add_set():
 
 @app.route("/api/cards/<int:set_id>", methods=["GET"])
 def loadSet(set_id):
+    print(f"[API] Karten-Request mit SET_ID={set_id}")
     response = (
         supabase.table("Karteikarten")
         .select("*")
         .eq("SET_ID", set_id)
         .execute()
     )
-    cards = response.data
-    return jsonify(cards)
+    print("[API] Antwort von Supabase:", response.data)
+    return jsonify(response.data)
+
 
 
 
