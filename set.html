@@ -1,151 +1,193 @@
-
-
-<!--   Luka  , -->
-
-
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <link rel="stylesheet" href="set.css">
+  <meta charset="UTF-8" />
+  <title>Set lernen</title>
+  <link rel="stylesheet" href="set.css" />
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
-
 <body class="Background">
   <div id="app">
     <a href="input.html">
-      <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu">
+      <img class="Zahnrad" src="Zahnrad.png" alt="Return to menu" />
     </a>
 
     <div class="SetName">{{ setName }}</div>
 
-    <div class="Set" v-if="currentCard">
+    <div class="Set">
       <div class="ButtonsAndCard">
         <div class="NichtErledigtCounter">{{ countNichtErledigt }}</div>
         <div class="NichtErledigtButton" @click="markAsNichtErledigt">🟥</div>
+
         <div class="Karteikarte" @click="flipCard">
-          <p>{{ showDefinition ? currentCard.ruckseite : currentCard.Vorderseite }}</p>
+          <p v-if="currentCard">{{ showDefinition ? currentCard.ruckseite : currentCard.Vorderseite }}</p>
+          <p v-else-if="cards.length > 0 && !currentCard && currentCountAnzahl >= countAnzahl">Set abgeschlossen!</p>
+          <p v-else-if="!setId">Keine Set-ID</p>
+          <p v-else-if="cards.length === 0 && setId && !loading">Keine Karten in diesem Set gefunden.</p>
+          <p v-else>Lade Karte...</p>
         </div>
+
         <div class="ErledigtButton" @click="markAsErledigt">🟩</div>
         <div class="ErledigtCounter">{{ countErledigt }}</div>
       </div>
 
       <div class="Count">{{ currentCountAnzahl }} / {{ countAnzahl }}</div>
-
-      <div class="ZurückFeld">
-        <div class="ZurückButton" @click="goBackOneCard">⬅️</div>
-      </div>
     </div>
 
-    <div class="ResetButton" @click="resetAllCards">
-      🔄 Reset
+    <div class="ZurückFeld">
+      <div class="ZurückButton" @click="goBackOneCard">⬅️</div>
     </div>
+    <button class="ResetButton" @click="resetAllCards">🔄 Reset</button>
+
   </div>
 
   <script>
     const { createApp } = Vue;
-    const API_BASE_URL = 'http://127.0.0.1:5000';
+    const API_BASE_URL = "http://127.0.0.1:5000";
 
     createApp({
       data() {
         return {
-          items: [],
+          setName: "",
+          cards: [],
           originalItems: [],
-          currentIndex: 0,
+          currentCard: null,
+          currentIndex: -1,
           showDefinition: false,
+          setId: null,
+          loading: true,
           countErledigt: 0,
           countNichtErledigt: 0,
-          setId: null,
-          setName: '',
+          currentCountAnzahl: 0,
+          countAnzahl: 0,
         };
       },
-      computed: {
-        currentCard() {
-          return this.items[this.currentIndex] || null;
-        },
-        currentCountAnzahl() {
-          return this.currentIndex + 1;
-        },
-        countAnzahl() {
-          return this.items.length;
-        },
-      },
       methods: {
-        flipCard() {
-          this.showDefinition = !this.showDefinition;
+        //Luka 
+        goBackOneCard() {
+          if (this.currentIndex === 0) return;
+          this.currentIndex--;
+          const previousCard = this.cards[this.currentIndex];
+          if (previousCard.erledigt === true) this.countErledigt--;
+          else this.countNichtErledigt--;
+          previousCard.erledigt = false;
+          this.showDefinition = false;
+          this.updateCurrentCardAndCount();
         },
-        markAsErledigt() {
-          this.countErledigt++;
-          this.items[this.currentIndex].erledigt = true;
+        //Luka
+        //Florian
+        async resetAllCards() {
+          if (!this.setId) return;
 
-          if (this.currentIndex < this.items.length - 1) {
-            this.nextCard();
+          try {const response = await fetch(`${API_BASE_URL}/api/set_reset`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ SET_ID: parseInt(this.setId) })
+          });
+          await this.fetchCards(this.setId);
+
+          this.countErledigt = 0;
+          this.countNichtErledigt = 0;
+          this.currentIndex = 0;
+          this.updateCurrentCardAndCount();
+          } catch (error) {
+            console.error("Fehler beim Reset:", error);
+
+          }
+        },
+        //Florian
+
+        
+        getSetId() {
+          const params = new URLSearchParams(window.location.search);
+          return params.get("set_id");
+        },
+
+        async fetchSetDetails(setId) {
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/sets`);
+            const sets = await response.json();
+            const currentSet = sets.find(s => s.ID == setId);
+            this.setName = currentSet ? currentSet.NAME : "Set nicht gefunden";
+          } catch (error) {
+            console.error(error);
+            this.setName = "Fehler beim Laden des Sets";
+          }
+        },
+        //Florian
+        //Luka
+        async fetchCards(setId) {
+          this.loading = true;
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/cards/${setId}`);
+            const result = await response.json();
+            this.cards = result;
+            this.originalItems = JSON.parse(JSON.stringify(result));
+            this.countAnzahl = this.cards.length;
+            this.currentIndex = 0;
+            this.updateCurrentCardAndCount();
+          } catch (error) {
+            console.error("Error fetching cards:", error);
+            this.cards = [];
+          } finally {
+            this.loading = false;
+          }
+        },
+        //Luka
+        //Nicola
+        updateCurrentCardAndCount() {
+          if (this.currentIndex >= 0 && this.currentIndex < this.cards.length) {
+            this.currentCard = this.cards[this.currentIndex];
+            this.currentCountAnzahl = this.currentIndex + 1;
+            this.showDefinition = false;
           } else {
-            this.restartWithIncorrectCards();
+            this.currentCard = null;
+          }
+        },
+        //Nicola
+        //Florian
+        flipCard() {
+          if (this.currentCard) {
+            this.showDefinition = !this.showDefinition;
+          }
+        },
+        //Nicola
+        moveToNextCard() {
+          if (this.currentIndex < this.cards.length - 1) {
+            this.currentIndex++;
+            this.updateCurrentCardAndCount();
+          } else {
+            this.currentCard = null;
+            this.currentCountAnzahl = this.cards.length;
+            alert(`Set abgeschlossen!\nErledigt: ${this.countErledigt}\nNicht erledigt: ${this.countNichtErledigt}`);
+          }
+        },
+        //Nicola
+        //Florian
+        async markAsErledigt() {
+          if (!this.currentCard) return;
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/erledigt`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: this.currentCard.id }),
+            });
+            //ChatGPT
+            if (!response.ok) throw new Error(await response.text());
+            //ChatGPT
+            this.countErledigt++;
+            this.moveToNextCard();
+          } catch (error) {
+            console.error("Fehler beim Markieren als erledigt:", error);
           }
         },
         markAsNichtErledigt() {
+          if (!this.currentCard) return;
           this.countNichtErledigt++;
-          this.items[this.currentIndex].erledigt = false;
-
-          if (this.currentIndex < this.items.length - 1) {
-            this.nextCard();
-          } else {
-            this.restartWithIncorrectCards();
-          }
+          this.moveToNextCard();
         },
-        nextCard() {
-          this.currentIndex++;
-          this.showDefinition = false;
-        },
-
-        // CHATGPT
-        goBackOneCard() {
-          if (this.currentIndex === 0) return;
-
-          this.currentIndex--;
-
-          const previousCard = this.items[this.currentIndex];
-
-          if (previousCard.erledigt === true) {
-            this.countErledigt--;
-          } else if (previousCard.erledigt === false) {
-            this.countNichtErledigt--;
-          }
-
-          previousCard.erledigt = false;
-          this.showDefinition = false;
-        },
-        restartWithIncorrectCards() {
-          const falsch = this.items.filter(item => item.erledigt === false);
-
-          if (falsch.length === 0) {
-            alert("Alle Karten erledigt, zum Neustarten Knopf unten rechts klicken!");
-            this.items = [];
-            this.currentIndex = 0;
-            this.showDefinition = false;
-            return;
-          }
-
-          this.items = falsch.map(item => ({ ...item }));
-          this.currentIndex = 0;
-          this.countErledigt = 0;
-          this.countNichtErledigt = 0;
-          this.showDefinition = false;
-        },
-        resetAllCards() {
-          this.items = this.originalItems.map(card => ({
-            ...card,
-            erledigt: false
-          }));
-          // CHATGPT
-
-
-          this.currentIndex = 0;
-          this.countErledigt = 0;
-          this.countNichtErledigt = 0;
-          this.showDefinition = false;
-        },
-        returnToMenu() {
-          window.location.href = "input.html";
-        },
+        //Florian
+        //Luka
         handleKeyPress(event) {
           if (event.key === 'ArrowLeft') {
             this.markAsNichtErledigt();
@@ -157,51 +199,30 @@
           } else if (event.key === 'ArrowDown') {
             this.goBackOneCard();
           } else if (event.key === 'Escape') {
-            event.preventDefault();
             this.returnToMenu();
           } else if (event.key === 'Shift') {
             event.preventDefault();
             this.resetAllCards();
           }
         },
-
-        // CHATGPT
-        getSetIdFromUrl() {
-          const params = new URLSearchParams(window.location.search);
-          return params.get("set");
-        // CHATGPT
-
-        },
-        async fetchCards() {
-          try {
-            const response = await fetch(`${API_BASE_URL}/api/cards/${this.setId}`);
-            const data = await response.json();
-            this.originalItems = data;
-            this.items = data.map(card => ({ ...card, erledigt: false }));
-          } catch (error) {
-            console.error('Fehler beim Laden der Karten:', error);
-          }
-        },
-        async fetchSetName() {
-          try {
-            const response = await fetch(`${API_BASE_URL}/api/sets`);
-            const sets = await response.json();
-            const currentSet = sets.find(s => s.set == this.setId);
-            this.setName = currentSet ? currentSet.set_name : "Unbekanntes Set";
-          } catch (error) {
-            console.error("Fehler beim Laden des Set-Namens:", error);
-          }
-        },
+        //Luka
       },
+      //Nicola
       async mounted() {
-        window.addEventListener('keydown', this.handleKeyPress);
-        this.setId = this.getSetIdFromUrl();
-        await this.fetchCards();
-        await this.fetchSetName();
+        this.setId = this.getSetId();
+        if (this.setId) {
+          await this.fetchSetDetails(this.setId);
+          await this.fetchCards(this.setId);
+        } else {
+          this.setName = "Kein Set gefunden";
+        }
+        window.addEventListener("keydown", this.handleKeyPress);
       },
       beforeUnmount() {
-        window.removeEventListener('keydown', this.handleKeyPress);
+        window.removeEventListener("keydown", this.handleKeyPress);
       },
-    }).mount('#app');
+      //Nicola
+    }).mount("#app");
   </script>
 </body>
+</html>
